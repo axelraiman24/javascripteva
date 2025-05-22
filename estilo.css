@@ -47,7 +47,7 @@ input[type="number"] {
 }
 
 button {
-    background-color: #28a745;
+    background-color: #2ba748;
     color: #fff;
     padding: 12px 20px;
     border: none;
@@ -59,11 +59,11 @@ button {
 }
 
 button:hover {
-    background-color: #25963d;
+    background-color: #228b39;
 }
 
 .error {
-    color: red;
+    color: rgb(241, 9, 9);
     font-size: 0.9rem;
 }
 
