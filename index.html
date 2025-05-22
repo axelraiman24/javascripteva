@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Notas Front-End</title>
+    <link rel="stylesheet" href="estilo.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>Notas de los estudiantes</h2>
+
+        <div id="average" class="average">Promedio de notas: Aún no se han ingresado notas.</div>
+
+        <form id="studentForm" novalidate>
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" />
+                <span class="error" id="errorName"></span>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Apellido:</label>
+                <input type="text" id="lastName" />
+                <span class="error" id="errorLastName"></span>
+            </div>
+            <div class="form-group">
+                <label for="grade">Nota (1.0 a 7.0):</label>
+                <input type="number" id="grade" step="0.1" min="1" max="7" />
+                <span class="error" id="errorGrade"></span>
+            </div>
+            <button type="submit">Agregar estudiante</button>
+        </form>
+
+        <table id="studentTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
