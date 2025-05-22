@@ -8,22 +8,21 @@ const gradeInput = document.getElementById("grade");
 form.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    // Limpiar mensajes previos
     nameInput.setCustomValidity("");
     lastNameInput.setCustomValidity("");
     gradeInput.setCustomValidity("");
 
-    // Validar nombre
+    
     if (!nameInput.value.trim()) {
         nameInput.setCustomValidity("Por favor, complete el campo Nombre.");
     }
 
-    // Validar apellido
+    
     if (!lastNameInput.value.trim()) {
         lastNameInput.setCustomValidity("Por favor, complete el campo Apellido.");
     }
 
-    // Validar nota
+    
     if (!gradeInput.value) {
         gradeInput.setCustomValidity("Por favor, complete el campo Nota.");
     } else {
@@ -33,13 +32,13 @@ form.addEventListener("submit", function (e) {
         }
     }
 
-    // Si hay algún error, mostrar burbujas y no continuar
+    
     if (!form.checkValidity()) {
         form.reportValidity();
         return;
     }
 
-    // Si pasa validación, guardar datos
+    //guardar datos
     const student = {
         name: nameInput.value.trim(),
         lastName: lastNameInput.value.trim(),
