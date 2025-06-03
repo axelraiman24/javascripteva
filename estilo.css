@@ -98,3 +98,62 @@ th {
         text-align: left;
     }
 }
+
+/* Estilo general para la tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Estilo para los botones */
+button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 4px;
+  font-weight: bold;
+}
+
+/* Botón eliminar en rojo */
+button.delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Botón editar en azul */
+button.edit {
+  background-color: #3498db;
+  color: white;
+}
+
+/* Botón guardar (en edición) */
+button.save {
+  background-color: #2ecc71;
+  color: white;
+}
+
+/* Input de edición */
+td input[type="number"] {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 60px;
+}
+
+/* Tabla oculta inicialmente */
+.hidden {
+  display: none;
+}
+
+/* Hover para filas */
+tr:hover {
+  background-color: #f5f5f5;
+}
