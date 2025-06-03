@@ -61,9 +61,14 @@ function addStudentToTable(student) {
         <td>${student.name}</td>
         <td>${student.lastName}</td>
         <td>${student.grade.toFixed(1)}</td>
-        <td> <button class="delete">Eliminar</button</td>
+        <td>
+            <button class="delete">Eliminar</button>
+            <button class="edit">Editar</button>
+        </td>
     `;
-
+row.querySelector(".edit").addEventListener("click", function(){
+    editarEstudiante(student, row);
+})
 row.querySelector(".delete").addEventListener("click",function(){
     deleteEstudiante(student,row);
 });
@@ -79,6 +84,45 @@ function deleteEstudiante(student,row){
         row.remove();
         calcularPromedio();
     }}
+
+function editarEstudiante(student, row) {
+    // Obtiene la celda de la nota (3ra celda, índice 2)
+    const gradeCell = row.cells[2];
+
+    // Guarda el valor original por si se cancela
+    const valorOriginal = student.grade;
+
+    // Crea el input para editar
+    const input = document.createElement("input");
+    input.type = "number";
+    input.min = 1;
+    input.max = 7;
+    input.step = 0.1;
+    input.value = student.grade;
+    input.style.width = "60px";
+
+    // Crea el botón guardar
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "Guardar";
+
+    // Limpia la celda y agrega input + botón
+    gradeCell.textContent = "";
+    gradeCell.appendChild(input);
+    gradeCell.appendChild(saveBtn);
+
+    // Al hacer clic en guardar
+    saveBtn.addEventListener("click", function () {
+        const nuevaNota = parseFloat(input.value);
+        if (!isNaN(nuevaNota) && nuevaNota >= 1 && nuevaNota <= 7) {
+            student.grade = nuevaNota;
+            gradeCell.textContent = nuevaNota.toFixed(1);
+            calcularPromedio();
+        } else {
+            alert("La nota debe estar entre 1.0 y 7.0");
+            input.focus();
+        }
+    });
+}
 
 function calcularPromedio() {
     if (students.length === 0) {
