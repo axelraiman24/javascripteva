@@ -37,18 +37,22 @@ form.addEventListener("submit", function (e) {
         form.reportValidity();
         return;
     }
+    
 
     //guardar datos
     const student = {
         name: nameInput.value.trim(),
         lastName: lastNameInput.value.trim(),
         grade: parseFloat(gradeInput.value),
+        date: new Date()  // fecha actual
     };
 
     students.push(student);
     addStudentToTable(student);
     calcularPromedio();
     mostrarTabla();
+    actualizarEstadisticas();
+    
 
     form.reset();
 });
@@ -57,6 +61,10 @@ const tableBody = document.querySelector("#studentTable tbody");
 
 function addStudentToTable(student) {
     const row = document.createElement("tr");
+
+    // Convertir la fecha a formato legible
+    const fecha = new Date(student.date).toLocaleDateString();
+
     row.innerHTML = `
         <td>${student.name}</td>
         <td>${student.lastName}</td>
@@ -65,25 +73,31 @@ function addStudentToTable(student) {
             <button class="delete">Eliminar</button>
             <button class="edit">Editar</button>
         </td>
+        <td>${fecha}</td> <!-- Agregamos la fecha -->
     `;
-row.querySelector(".edit").addEventListener("click", function(){
-    editarEstudiante(student, row);
-})
-row.querySelector(".delete").addEventListener("click",function(){
-    deleteEstudiante(student,row);
-});
+
+    row.querySelector(".edit").addEventListener("click", function() {
+        editarEstudiante(student, row);
+    });
+
+    row.querySelector(".delete").addEventListener("click", function() {
+        deleteEstudiante(student, row);
+    });
+
     tableBody.appendChild(row);
 }
 
 const promedioDiv = document.getElementById("average");
 
-function deleteEstudiante(student,row){
-    const index=students.indexOf(student);
-    if(index > -1){
-        students.splice(index,1);
+function deleteEstudiante(student, row) {
+    const index = students.indexOf(student);
+    if (index > -1) {
+        students.splice(index, 1);
         row.remove();
         calcularPromedio();
-    }}
+        actualizarEstadisticas();  // Actualizar estadísticas después de eliminar
+    }
+}
 
 function editarEstudiante(student, row) {
     // Obtiene la celda de la nota (3ra celda, índice 2)
@@ -134,6 +148,16 @@ function calcularPromedio() {
     const promedio = total / students.length;
 
     promedioDiv.textContent = `Promedio de Notas: ${promedio.toFixed(2)}`;
+}
+
+function actualizarEstadisticas() {
+    const total = students.length;
+    const enExamen = students.filter(s => s.grade < 5.0).length;
+    const eximidos = students.filter(s => s.grade > 5.0).length;
+
+    document.getElementById("totalEstudiantes").textContent = total;
+    document.getElementById("enExamen").textContent = enExamen;
+    document.getElementById("eximidos").textContent = eximidos;
 }
 
 function mostrarTabla() {
