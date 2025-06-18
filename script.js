@@ -4,6 +4,7 @@ const form = document.getElementById("studentForm");
 const nameInput = document.getElementById("name");
 const lastNameInput = document.getElementById("lastName");
 const gradeInput = document.getElementById("grade");
+const dateInput = document.getElementById("date");
 
 form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -11,18 +12,14 @@ form.addEventListener("submit", function (e) {
     nameInput.setCustomValidity("");
     lastNameInput.setCustomValidity("");
     gradeInput.setCustomValidity("");
+    dateInput.setCustomValidity("");
 
-    
     if (!nameInput.value.trim()) {
         nameInput.setCustomValidity("Por favor, complete el campo Nombre.");
     }
-
-    
     if (!lastNameInput.value.trim()) {
         lastNameInput.setCustomValidity("Por favor, complete el campo Apellido.");
     }
-
-    
     if (!gradeInput.value) {
         gradeInput.setCustomValidity("Por favor, complete el campo Nota.");
     } else {
@@ -31,20 +28,20 @@ form.addEventListener("submit", function (e) {
             gradeInput.setCustomValidity("La nota debe estar entre 1.0 y 7.0.");
         }
     }
+    if (!dateInput.value) {
+        dateInput.setCustomValidity("Por favor, seleccione una fecha.");
+    }
 
-    
     if (!form.checkValidity()) {
         form.reportValidity();
         return;
     }
-    
 
-    //guardar datos
     const student = {
         name: nameInput.value.trim(),
         lastName: lastNameInput.value.trim(),
         grade: parseFloat(gradeInput.value),
-        date: new Date()  // fecha actual
+        date: dateInput.value
     };
 
     students.push(student);
@@ -52,8 +49,6 @@ form.addEventListener("submit", function (e) {
     calcularPromedio();
     mostrarTabla();
     actualizarEstadisticas();
-    
-
     form.reset();
 });
 
@@ -62,8 +57,7 @@ const tableBody = document.querySelector("#studentTable tbody");
 function addStudentToTable(student) {
     const row = document.createElement("tr");
 
-    // Convertir la fecha a formato legible
-    const fecha = new Date(student.date).toLocaleDateString();
+    const fechaFormateada = formatearFecha(student.date);
 
     row.innerHTML = `
         <td>${student.name}</td>
@@ -73,18 +67,24 @@ function addStudentToTable(student) {
             <button class="delete">Eliminar</button>
             <button class="edit">Editar</button>
         </td>
-        <td>${fecha}</td> <!-- Agregamos la fecha -->
+        <td>${fechaFormateada}</td>
     `;
 
-    row.querySelector(".edit").addEventListener("click", function() {
+    row.querySelector(".edit").addEventListener("click", function () {
         editarEstudiante(student, row);
     });
 
-    row.querySelector(".delete").addEventListener("click", function() {
+    row.querySelector(".delete").addEventListener("click", function () {
         deleteEstudiante(student, row);
     });
 
     tableBody.appendChild(row);
+}
+
+// ✅ Corregido: no quita un día porque usa split directamente
+function formatearFecha(fecha) {
+    const [anio, mes, dia] = fecha.split("-");
+    return `${dia}/${mes}/${anio}`;
 }
 
 const promedioDiv = document.getElementById("average");
@@ -95,46 +95,94 @@ function deleteEstudiante(student, row) {
         students.splice(index, 1);
         row.remove();
         calcularPromedio();
-        actualizarEstadisticas();  // Actualizar estadísticas después de eliminar
+        actualizarEstadisticas();
     }
 }
 
 function editarEstudiante(student, row) {
-    // Obtiene la celda de la nota (3ra celda, índice 2)
+    const nameCell = row.cells[0];
+    const lastNameCell = row.cells[1];
     const gradeCell = row.cells[2];
+    const actionsCell = row.cells[3];
+    const dateCell = row.cells[4];
 
-    // Guarda el valor original por si se cancela
-    const valorOriginal = student.grade;
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.value = student.name;
+    nameInput.style.width = "100px";
 
-    // Crea el input para editar
-    const input = document.createElement("input");
-    input.type = "number";
-    input.min = 1;
-    input.max = 7;
-    input.step = 0.1;
-    input.value = student.grade;
-    input.style.width = "60px";
+    const lastNameInput = document.createElement("input");
+    lastNameInput.type = "text";
+    lastNameInput.value = student.lastName;
+    lastNameInput.style.width = "100px";
 
-    // Crea el botón guardar
+    const gradeInput = document.createElement("input");
+    gradeInput.type = "number";
+    gradeInput.min = 1;
+    gradeInput.max = 7;
+    gradeInput.step = 0.1;
+    gradeInput.value = student.grade;
+    gradeInput.style.width = "60px";
+
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.value = student.date;
+    dateInput.style.width = "130px";
+
     const saveBtn = document.createElement("button");
     saveBtn.textContent = "Guardar";
 
-    // Limpia la celda y agrega input + botón
-    gradeCell.textContent = "";
-    gradeCell.appendChild(input);
-    gradeCell.appendChild(saveBtn);
+    nameCell.textContent = "";
+    nameCell.appendChild(nameInput);
 
-    // Al hacer clic en guardar
+    lastNameCell.textContent = "";
+    lastNameCell.appendChild(lastNameInput);
+
+    gradeCell.textContent = "";
+    gradeCell.appendChild(gradeInput);
+
+    dateCell.textContent = "";
+    dateCell.appendChild(dateInput);
+
+    actionsCell.textContent = "";
+    actionsCell.appendChild(saveBtn);
+
     saveBtn.addEventListener("click", function () {
-        const nuevaNota = parseFloat(input.value);
-        if (!isNaN(nuevaNota) && nuevaNota >= 1 && nuevaNota <= 7) {
-            student.grade = nuevaNota;
-            gradeCell.textContent = nuevaNota.toFixed(1);
-            calcularPromedio();
-        } else {
-            alert("La nota debe estar entre 1.0 y 7.0");
-            input.focus();
+        const nuevaNota = parseFloat(gradeInput.value);
+        if (
+            !nameInput.value.trim() ||
+            !lastNameInput.value.trim() ||
+            isNaN(nuevaNota) || nuevaNota < 1 || nuevaNota > 7 ||
+            !dateInput.value
+        ) {
+            alert("Debes completar todos los campos correctamente.");
+            return;
         }
+
+        student.name = nameInput.value.trim();
+        student.lastName = lastNameInput.value.trim();
+        student.grade = nuevaNota;
+        student.date = dateInput.value;
+
+        nameCell.textContent = student.name;
+        lastNameCell.textContent = student.lastName;
+        gradeCell.textContent = student.grade.toFixed(1);
+        dateCell.textContent = formatearFecha(student.date);
+
+        actionsCell.innerHTML = `
+            <button class="delete">Eliminar</button>
+            <button class="edit">Editar</button>
+        `;
+
+        actionsCell.querySelector(".delete").addEventListener("click", function () {
+            deleteEstudiante(student, row);
+        });
+        actionsCell.querySelector(".edit").addEventListener("click", function () {
+            editarEstudiante(student, row);
+        });
+
+        calcularPromedio();
+        actualizarEstadisticas();
     });
 }
 
@@ -143,10 +191,8 @@ function calcularPromedio() {
         promedioDiv.textContent = "Aún no se han ingresado notas.";
         return;
     }
-
     const total = students.reduce((sum, student) => sum + student.grade, 0);
     const promedio = total / students.length;
-
     promedioDiv.textContent = `Promedio de Notas: ${promedio.toFixed(2)}`;
 }
 

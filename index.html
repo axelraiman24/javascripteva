@@ -10,14 +10,15 @@
     <div class="container">
         <h2>Notas de los estudiantes</h2>
 
-        <div id="average" class="average">Promedio de notas: Aún no se han ingresado notas.
-        </div>
+        <div id="average" class="average">Promedio de notas: Aún no se han ingresado notas.</div>
+
         <div id="estadisticas">
             <p>Total de estudiantes: <span id="totalEstudiantes">0</span></p>
             <p>Estudiantes en examen: <span id="enExamen">0</span></p>
             <p>Estudiantes eximidos: <span id="eximidos">0</span></p>
-          </div>
-          <form id="studentForm" novalidate>
+        </div>
+
+        <form id="studentForm" novalidate>
             <div class="form-group">
                 <label for="name">Nombre:</label>
                 <input type="text" id="name" />
@@ -40,7 +41,6 @@
             </div>
             <button type="submit">Guardar estudiante</button>
         </form>
-        
 
         <table id="studentTable" class="hidden">
             <thead>
@@ -52,8 +52,7 @@
                     <th>Fecha</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
